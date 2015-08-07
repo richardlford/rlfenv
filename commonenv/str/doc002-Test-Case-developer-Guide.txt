@@ -1,0 +1,681 @@
+\PROJECTS\EDT\Compiler\HowTo
+ 
+WARNING: If this file is not in the path specified above,
+	 or is a paper copy, then it is an UNCONTROLLED COPY
+
+
+ 	Test Case Developer's Guide
+ 
+Change History
+	8/15/1998		I-Yu  Chen	Initial draft
+ 
+ 
+This document describes conventions and methodology for
+test developers to use in developing product test
+suites.
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  2
+ 
+ 
+ 
+1.  Test Development Methodology
+ 
+The methodology that we will use to write resembles the
+traditional methodology for producing large software
+projects.  The test cases will be produced in three separate
+phases:
+ 
+ 
+1.1  Test Point Definition
+ 
+This phase identifies all the elements of the product
+that we want to test, and identifies the combinations in
+which the elements will be tested.
+ 
+ 
+1.2  Prolog Definition
+ 
+This phase produces a "prolog" for each test case.  A prolog
+is a header comment that identifies the test case,
+identifies the features that are tested, and specifies the
+logic of the test and the testing algorithm.
+ 
+ 
+1.3  Test Case Production
+ 
+This phase produces the code that actually implements
+the test case.  The primary reference for this activity is
+the set of test prologs that correspond to the test cases.
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  3
+ 
+ 
+ 
+2.  PHASE I: Test Point Definition
+ 
+A test point is simply some feature of the product that is
+to be exercised.  For example, some typical test points for
+an arithmetic statement tests are:
+ 
+ 
+ 
+ 
+o MULTIPLY statement
+ 
+o operand's data type
+ 
+o operand with scaling factor
+ 
+o operand with round option
+ 
+ 
+The matrix approach is shown below:
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  4
+ 
+ 
+ 
+____________________________________________________________
+Arithmetic Statements        ARS
+____________________________________________________________
+  variation number                       0 0 0 0 0  . . .
+____________________________________________________________
+                                         0 1 2 3 4
+___________________________________________________________
+____________________________________________________________
+        0001            MULTIPLY stmt    * * * * *
+____________________________________________________________
+        0002              operand 1      * * * * *
+____________________________________________________________
+        0003              constant       *
+____________________________________________________________
+        0004             binary type       *
+____________________________________________________________
+        0005            decimal type         *   *
+____________________________________________________________
+        0006          pack decimal type          *
+____________________________________________________________
+ 
+____________________________________________________________
+        0007          scaling factor 0   * *
+____________________________________________________________
+        0008          scaling factor 1         *
+____________________________________________________________
+        0009          scaling factor 2       *   *
+____________________________________________________________
+ 
+____________________________________________________________
+        0010            large number     *   * * *
+____________________________________________________________
+        0011            small number       *
+____________________________________________________________
+ 
+____________________________________________________________
+        0012           no round option   * * * * *
+____________________________________________________________
+ 
+____________________________________________________________
+        0013              operand 2      * * * * *
+____________________________________________________________
+        0014             binary type         *
+____________________________________________________________
+        0015            decimal type       *     *
+____________________________________________________________
+        0016          pack decimal type        *
+____________________________________________________________
+ 
+____________________________________________________________
+        0017          scaling factor 0   *
+____________________________________________________________
+        0018          scaling factor 1       *
+____________________________________________________________
+        0019          scaling factor 2     *   * *
+____________________________________________________________
+ 
+____________________________________________________________
+        0020            large number     *   * * *
+____________________________________________________________
+        0021            small number       *
+____________________________________________________________
+ 
+____________________________________________________________
+        0022          has round option     * * *
+____________________________________________________________
+____________________________________________________________
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  5
+ 
+ 
+ 
+        0023           no round option   *       *
+____________________________________________________________
+ 
+ ____________________________________________________________
+ 
+ 
+This matrix identifies 23 separate test points, and 5
+relevent variations.  The variation numbers across the
+second and the third lines are used to identify variations
+within a matrix.  The line items in the leftmost column
+correspond to test points identified for the feature.
+Finally, the matrix field shows the combinations of line
+items that make up the individual variations.  The test
+developer needs to develop a special-purpose matrix tool to
+assist in building and reporting on matrices.  The variation
+report corresponding to the above matrix is shown in the
+following example:
+ 
+ 
+ 
+Arithmetic Statement Tests
+ 
+Variation ARS00
+  0001 MULTIPLY stmt
+  0002   operand 1
+  0003     constant
+  0007     scaling factor 0
+  0010     large number
+  0012     no round option
+  0013   operand 2
+  0018     scaling factor 0
+  0021     large number
+  0024     no round option
+ 
+ 
+Variation ARS01
+  0001 MULTIPLY stmt
+  0002   operand 1
+  0004     binary type
+  0007     scaling factor 0
+  0011     small number
+  0012     no round option
+  0013   operand 2
+  0016     decimal type
+  0020     scaling factor 2
+  0022     small number
+  0023     has round option
+ 
+Variation ARS02
+  0001 MULTIPLY stmt
+  0002   operand 1
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  6
+ 
+ 
+ 
+  0005     decimal type
+  0009     scaling factor 2
+  0010     large number
+  0012     no round option
+  0013   operand 2
+  0015     binary type
+  0019     scaling factor 1
+  0021     large number
+  0023     has round option
+ 
+Variation ARS03
+  0001 MULTIPLY stmt
+  0002   operand 1
+  0006     pack decimal type
+  0008     scaling factor 1
+  0010     large number
+  0012     no round option
+  0013   operand 2
+  0017     pack decimal type
+  0020     scaling factor 2
+  0021     large number
+  0023     has round option
+ 
+Variation ARS04
+  0001 MULTIPLY stmt
+  0002   operand 1
+  0005     decimal type
+  0009     scaling factor 2
+  0010     large number
+  0012     no round option
+  0013   operand 2
+  0016     decimal type
+  0020     scaling factor 2
+  0021     large number
+  0024     no round option
+ 
+ 
+ 
+This report can serve as an accurate summary of the contents
+of each test case to be produced, without the use of
+cumbersome text.  Of course, the success of this matrix
+approach depends a great deal on the skill of the user in
+making the line items "readable".
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  7
+ 
+ 
+ 
+3.  PHASE II: Test Case Prolog
+ 
+Every test case is accompanied by a block prolog that
+documents the test case.  In the test case design phase, the
+prolog is designed and written even before the test case
+itself is written.  A sample prolog skeleton is shown as
+follows:
+ 
+ 
+ 
+TEST ID:
+ 
+PRIMARY FUNCTION:
+
+TEST REFERENCE:
+ 
+AUTHOR:
+ 
+DATE WRITTEN:
+ 
+TEST METHOD:
+ 
+SUCCESS CRITERIA:
+ 
+POST-PROCESSING REQUIRED:
+ 
+DEPENDENCIES:
+ 
+EXECUTION TIME:
+ 
+SET-UP REQUIREMENTS:
+ 
+APPLICABLE SYSTEMS:
+ 
+REVISION HISTORY:
+ 
+EXPECTED COMPILATION MESSAGES:
+ 
+EXPECTED EXECUTION MESSAGES:
+ 
+ 
+ 
+ 
+3.1  Test Id
+ 
+This section of the comment contains the name of the test,
+as defined by the test developer.
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  8
+ 
+ 
+ 
+3.2  Primary Function
+ 
+This section describes the optimization feature exercised in
+the test.  The contents of this section should be aimed at a
+human reader who simply wants to get a cursory idea of what
+the test does.
+ 
+ 
+3.3  Test Reference
+ 
+This section of the prolog contains the names of all
+supporting documents.
+ 
+ 
+3.4  Author
+ 
+This section of the prolog contains the name of the person
+responsible for coding the prolog.
+ 
+ 
+3.5  Date Written
+ 
+This section contains the date on which the initial coding
+of the prolog was completed.
+ 
+ 
+3.6  Test Method
+ 
+This section of the prolog contains a description of the
+test, along with any notes necessary to understand unusual
+algorithms and/or data structures.  For each test to be
+performed, this section should give a quick sketch of the
+logic of the test.
+ 
+ 
+3.7  Success Criteria 
+ 
+This section of the prolog contains a description of the
+algorithm used to decide whether the test passed or failed.
+Pass/fail is a binary decision.
+ 
+ 
+3.8  Post Processing Required
+ 
+This section describes any exceptional analysis that must be
+performed after the test is run to determine whether the
+test passed or failed.
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                  9
+ 
+ 
+ 
+3.9  Dependencies
+ 
+This section of the prolog lists any pre-conditions for the
+test to be meaningful.  These pre- conditions might refer to
+other optimization or language features that must be
+correct, certain attributes of the target installation, etc.
+ 
+ 
+3.10  Execution Time
+ 
+This section of the prolog contains the expected run time of
+the test in CPU microseconds.  This quantity is typically
+measured during the initial runs of the test, and added to
+the prolog later.
+ 
+ 
+3.11  Setup Requirements
+ 
+This section describes any special environmental situations
+that must be established before the test is run.  These
+situations might include special datasets to be created,
+etc.
+ 
+ 
+ 
+3.12  Applicable Systems
+ 
+This section lists all systems on which the test case will
+execute.
+ 
+ 
+3.13  Revision History
+ 
+This section is used for a running history of modifications
+made to the test.  Each note should include:
+ 
+ [1]  The name of the person making the change.
+ 
+ [2]  The date of the change.
+ 
+ [3]  A short description of the change made.
+ 
+ [4]  The reason for the change.
+ 
+ 
+3.14  Expected Compilation Message
+ 
+This section contains a listing of all the messages produced
+by the compiler during a normal compilation of the test
+case.  This information is not supplied by the test  case
+author, but is added to the prolog by a post-processor after
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                 10
+ 
+ 
+ 
+the test case has been successfully compiled.
+ 
+ 
+3.15  Expected Execution Messages
+ 
+This section contains a listing of all the messages produced
+during execution of the test case.  This information is also
+supplied by a post-processor.
+ 
+ 
+ 
+4.  PHASE III: Test Case Production
+ 
+ 
+ 
+4.1  General Coding Standards
+ 
+The code in the body of the standard will be dictated by the
+indentation of the test, but wherever possible, the
+following coding standards should be followed:
+ 
+ [1]  Standard indentation for structured statements is 4
+      spaces,
+ 
+ [2]  ALL variables, entry points, etc. must be explicitly
+      declared,
+ 
+ [3]  variable names should be suggestive of their roles in
+      the test logic,
+ 
+ [4]  Each test is coded as a procedure, whose name is the
+      test name assigned during test specification,
+ 
+ [5]  Running comments are encouraged, whenever they can be
+      used to explain the logic of the test, or some part of
+      the test reporting mechanism.
+ 
+ 
+4.2  Reporting Test Results
+ 
+Test cases should provide standard routines for recording
+test results, such as:
+ 
+  A.  TEST START
+ 
+      This routine records the time and date at which it was
+      called, the name of the test that called it, and
+      records the fact that the test was started.  The
+      statistics are used to maintain the pass/fail history
+      of all the tests, and to figure the expected run time
+      of the tests.
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TEST CASE DEVELOPER'S GUIDE                 11
+ 
+ 
+ 
+  B.  TEST STOP
+ 
+      This routine records the time and date at which it was
+      called, the name of the test that called it, and
+      records the fact that the test completed.
+ 
+  C.  TEST PASS
+ 
+      This routines records the time and date at which it
+      was called, the name of the test that called it, and
+      records the fact that the test passed its acceptance
+      criteria.
+ 
+  D.  TEST FAIL
+ 
+      This routine records the time and date at which it was
+      called, the name of the test that called it, records
+      the fact that the test failed its acceptance criteria.
+ 
+  E.  TEST ENVIRONMENT
+ 
+      This routine records the time and date at which it was
+      called, the name of the test that called it, records
+      the fact that the type of hardware, the version of
+      compiler, library routine, etc. that the test is
+      running on.
+ 
+  F.  TEST NOTE
+ 
+      This routine records the time and date at which it was
+      called, the name of the test that called it, and a
+      line of text about the progress of the test.  It may
+      be used for expanding on why the test failed, for
+      dumping intermediate values of variables, or for a
+      time stamp of when a given point in the test was
+      reached.
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                          CONTENTS
+ 
+ 
+1.  Test Development Methodology  
+    1.1   Test Point Definition
+    1.2   Prolog Definition
+    1.3   Test Case Production
+ 
+2.  PHASE I: Test Point Definition
+ 
+3.  PHASE II: Test Case Prolog
+    3.1   Test Id
+    3.2   Primary Function
+    3.3   Test Reference
+    3.4   Author  
+    3.5   Date Written
+    3.6   Test Method
+    3.7   Acceptance  Criteria
+    3.8   Post Processing Required
+    3.9   Dependencies  
+    3.10  Execution Time
+    3.11  Setup Requirements
+    3.12  Applicable  Systems
+    3.13  Revision History
+    3.14  Expected  Compilation Message
+    3.15  Expected Execution Messages
+ 
+4.  PHASE III: Test Case Production
+    4.1   General Coding Standards
+    4.2   Reporting Test Results
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                           - i -
+ 
+ 
+ 
+

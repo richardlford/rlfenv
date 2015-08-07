@@ -1,0 +1,6 @@
+#!/bin/sh
+# Make tags files for C or C++ files in current directory subtree.
+set -x
+# `ls ~/commonenv/str/*.h` `ls ~/commonenv/str/*.cpp` 
+
+etags  `find  ! -regex '.*/.svn.*' ! -regex '.*/CVS.*' -type f \( -name '*.[ch]' -o -name '*.cpp'  -o -name '*.cc' \) | sort`  

@@ -1,0 +1,82 @@
+(defun win-filename (path)
+  (interactive "spath")
+  (let (i)
+    (setq i (- (length path) 1))
+    (while (and (>= i 0) (not (string= (substring path i (1+ i)) "\\")))
+      (setq i (1- i)))
+    (substring path (1+ i))))
+
+(defun istr ()
+  "Insert a structure with the current indentation level"
+  (interactive)
+  (let ( (sfx (suffix (win-filename (or buffer-file-name ""))))
+	 struct atom structfile col doedit startpos endpos template
+	 )
+    (if (string= sfx "")
+	(setq sfx ".sh"))
+    (setq struct (read-string (concat "structure to insert(suffix=" sfx "): ")))
+    (setq doedit nil)
+    (if (string= (substring struct 0 1) "=")
+	(setq doedit 't struct (substring struct 1)))
+    (setq struct (concat struct sfx))
+    (message "structure=%s" struct)
+    (setq atom (intern (concat "#istr#" struct)))
+    (if (or doedit (not (boundp atom)))
+	(progn
+	  (save-excursion
+	    (save-window-excursion
+	      (setq structfile (concat commonenv-dir "/str/" struct))
+	      ;(prompt-for-insert "istr1")
+	      (find-file structfile)
+	      (if doedit
+		  (progn
+		    (message "Recursive edit--edit structure1,doedit=%s" doedit)
+		    (recursive-edit)
+		    )
+		)
+	      (while (= (buffer-size) 0)
+		(message "Recursive edit in progress--edit structure2")
+		(recursive-edit)
+		)
+	      (untabify (point-min) (point-max))
+	      (if (buffer-modified-p) (save-buffer))
+	      (set atom (buffer-string))
+	      ))))
+    (if doedit
+	(message "Edit of structure %s done." struct)
+      ;We now have the value of the insert.  Figure out desired indentation.
+      (setq col (current-column))
+      (if (not (eolp))
+	  (save-excursion (newline) (insert-char ?  col)))
+      (setq startpos (point-marker))
+;      (read-string "brk1")
+      (insert (eval atom))
+;      (read-string "brk1.5")
+      (setq endpos (point-marker))
+      (indent-code-rigidly startpos endpos col)
+      ;Now do replacement of templates (items enclosed in [[words]])
+      (goto-char startpos)
+      (while (re-search-forward "\\[\\[[a-zA-z0-9_---]*\\]\\]" endpos t)
+;        (read-string "brk2")
+	(setq template (buffer-substring (match-beginning 0) (match-end 0)))
+	(replace-match "" t)
+	(setq tempval (prompt-for-insert (concat "Value for " template ":")))
+	;Replace any additional instances of the same template with same value.
+	(save-excursion
+	  (while (search-forward template endpos t)
+	    (replace-match tempval t)
+	    )
+	  )
+	)
+      (goto-char endpos)
+      ;delete a single blank line
+      (save-excursion
+	(if (looking-at "[ \t]*$")
+	    (kill-line 1)))
+      (push-mark)
+      ;Position to any possible template
+      (goto-char startpos)
+      (forward-template-limit endpos)
+      )
+    )
+  )

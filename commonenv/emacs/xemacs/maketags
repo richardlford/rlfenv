@@ -1,0 +1,2 @@
+#!/bin/sh -x
+etags ../common/*.el *.el

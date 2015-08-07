@@ -1,0 +1,5 @@
+#!/bin/sh
+# Print files in current directory subtree, skipping subversion
+# workspace files.
+
+a2ps --toc `find -maxdepth 1 ! -regex '.*/.svn.*' -type f | sort`

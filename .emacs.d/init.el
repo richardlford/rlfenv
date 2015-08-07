@@ -1,0 +1,12 @@
+;;
+(defun prompt-for-insert (prompt) (interactive)
+  (let ((start (copy-marker (point)))
+	end)
+    (message prompt)
+    (recursive-edit)
+    (buffer-substring start (point))
+    )
+)
+;;(prompt-for-insert "e1")
+;(load (expand-file-name "~/commonenv/emacs/dot.emacs"))
+(load (substitute-in-file-name "$GEMACSENV/.emacs.d/init.el"))

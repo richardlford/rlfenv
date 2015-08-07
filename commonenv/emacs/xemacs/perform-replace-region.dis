@@ -1,0 +1,337 @@
+byte code for perform-replace-region:
+  args: (from-string to-string query-flag regexp-flag delimited-flag start end)
+0	varref	  case-fold-search
+1	goto-if-nil-else-pop 1
+4	varref	  case-replace
+5	goto-if-nil-else-pop 1
+8	constant  string-equal
+9	varref	  from-string
+10	constant  downcase
+11	varref	  from-string
+12	call	  1
+13	call	  2
+14:1	not	  
+15	varref	  regexp-flag
+16	not	  
+17	varref	  regexp-flag
+18	goto-if-nil 2
+21	constant  re-search-forward
+22	goto	  3
+25:2	constant  search-forward
+26:3	varref	  from-string
+27	constant  t
+28	constant  copy-marker
+29	varref	  end
+31	call	  1
+32	constant  nil
+33	varbind	  lastrepl
+35	varbind	  end-marker
+37	varbind	  keep-going
+39	varbind	  search-string
+41	varbind	  search-function
+43	varbind	  literal
+44	varbind	  nocasify
+45	varref	  delimited-flag
+47	goto-if-nil-else-pop 6
+50	constant  re-search-forward
+51	varset	  search-function
+53	constant  "\\b"
+54	varref	  regexp-flag
+55	goto-if-nil 4
+58	varref	  from-string
+59	goto	  5
+62:4	constant  regexp-quote
+63	varref	  from-string
+64	call	  1
+65:5	constant  "\\b"
+66	concat3	  
+67	dup	  
+68	varset	  search-string
+70:6	discard	  
+71	constant  push-mark
+72	call	  0
+73	discard	  
+74	constant  push-mark
+75	call	  0
+76	discard	  
+77	varref	  start
+79	goto-char 
+80	discard	  
+81:7	varref	  keep-going
+83	goto-if-nil-else-pop 8
+86	eobp	  
+87	not	  
+88	goto-if-nil-else-pop 8
+91	point	  
+92	varref	  end-marker
+94	lss	  
+95	goto-if-nil-else-pop 8
+98	constant  set-mark
+99	point	  
+100	call	  1
+101	discard	  
+102	constant  funcall
+103	varref	  search-function
+105	varref	  search-string
+107	varref	  end-marker
+109	constant  t
+110	call	  4
+111:8	goto-if-nil-else-pop 36
+114	varref	  lastrepl
+116	point	  
+117	eq	  
+118	goto-if-nil 9
+121	constant  forward-char
+122	constant  1
+123	call	  1
+124	goto	  35
+127:9	constant  undo-boundary
+128	call	  0
+129	discard	  
+130	varref	  query-flag
+132	not	  
+133	goto-if-nil 10
+136	constant  replace-match
+137	varref	  to-string
+139	varref	  nocasify
+140	varref	  literal
+141	call	  3
+142	goto	  34
+145:10	constant  nil
+146	constant  nil
+147	varbind	  replaced
+149	varbind	  done
+151:11	varref	  done
+153	not	  
+154	goto-if-nil-else-pop 33
+157	constant  match-data
+158	call	  0
+159	constant  (concat "Query replacing " (if regexp-flag "regexp " "") from-string " with " to-string ".\n\n" (substitute-command-keys query-replace-help))
+160	varbind	  help-form
+162	varbind	  data
+164	varref	  help-char
+166	dup	  
+167	varset	  char
+169	discard	  
+170:12	varref	  char
+172	varref	  help-char
+174	eqlsign	  
+175	goto-if-nil-else-pop 14
+178	constant  message
+179	constant  "Query replacing %s with %s: "
+180	varref	  from-string
+181	varref	  to-string
+183	call	  3
+184	discard	  
+185	read-char-OBSOLETE 
+186	dup	  
+187	varset	  char
+189	discard	  
+190	varref	  char
+192	constant  63
+193	eqlsign	  
+194	goto-if-nil-else-pop 13
+197	varref	  help-char
+199	varset	  unread-command-char
+201	varref	  help-char
+203	dup	  
+204	varset	  char
+206:13	discard	  
+207	goto	  12
+210:14	discard	  
+211	constant  store-match-data
+212	varref	  data
+214	call	  1
+215	unbind	  2
+216	discard	  
+217	varref	  char
+219	constant  27
+220	eqlsign	  
+221	goto-if-not-nil-else-pop 15
+224	varref	  char
+226	constant  113
+227	eqlsign	  
+228:15	goto-if-nil 16
+231	constant  nil
+232	dup	  
+233	varset	  keep-going
+235	discard	  
+236	constant  t
+237	dup	  
+238	varset	  done
+240	goto	  32
+243:16	varref	  char
+245	constant  94
+246	eqlsign	  
+247	goto-if-nil 17
+250	constant  mark
+251	call	  0
+252	goto-char 
+253	discard	  
+254	constant  t
+255	dup	  
+256	varset	  replaced
+258	goto	  32
+261:17	varref	  char
+263	constant  32
+264	eqlsign	  
+265	goto-if-not-nil-else-pop 18
+268	varref	  char
+270	constant  121
+271	eqlsign	  
+272:18	goto-if-nil 20
+275	varref	  replaced
+277	goto-if-not-nil-else-pop 19
+280	constant  replace-match
+281	varref	  to-string
+283	varref	  nocasify
+284	varref	  literal
+285	call	  3
+286:19	discard	  
+287	constant  t
+288	dup	  
+289	varset	  done
+291	goto	  32
+294:20	varref	  char
+296	constant  46
+297	eqlsign	  
+298	goto-if-nil 22
+301	varref	  replaced
+303	goto-if-not-nil-else-pop 21
+306	constant  replace-match
+307	varref	  to-string
+309	varref	  nocasify
+310	varref	  literal
+311	call	  3
+312:21	discard	  
+313	constant  nil
+314	dup	  
+315	varset	  keep-going
+317	discard	  
+318	constant  t
+319	dup	  
+320	varset	  done
+322	goto	  32
+325:22	varref	  char
+327	constant  44
+328	eqlsign	  
+329	goto-if-nil 24
+332	varref	  replaced
+334	not	  
+335	goto-if-nil-else-pop 23
+338	constant  replace-match
+339	varref	  to-string
+341	varref	  nocasify
+342	varref	  literal
+343	call	  3
+344	discard	  
+345	constant  t
+346	dup	  
+347	varset	  replaced
+349:23	goto	  32
+352:24	varref	  char
+354	constant  33
+355	eqlsign	  
+356	goto-if-nil 26
+359	varref	  replaced
+361	goto-if-not-nil-else-pop 25
+364	constant  replace-match
+365	varref	  to-string
+367	varref	  nocasify
+368	varref	  literal
+369	call	  3
+370:25	discard	  
+371	constant  t
+372	varset	  done
+374	constant  nil
+375	dup	  
+376	varset	  query-flag
+378	goto	  32
+381:26	varref	  char
+383	constant  127
+384	eqlsign	  
+385	goto-if-not-nil-else-pop 27
+388	varref	  char
+390	constant  110
+391	eqlsign	  
+392:27	goto-if-nil 28
+395	constant  t
+396	dup	  
+397	varset	  done
+399	goto	  32
+402:28	varref	  char
+404	constant  12
+405	eqlsign	  
+406	goto-if-nil 29
+409	constant  recenter
+410	constant  nil
+411	call	  1
+412	goto	  32
+415:29	varref	  char
+417	constant  18
+418	eqlsign	  
+419	goto-if-nil 30
+422	constant  store-match-data
+423	constant  match-data
+424	call	  0
+425	save-excursion 
+426	constant  recursive-edit
+427	call	  0
+428	unbind	  1
+429	discard	  
+430	call	  1
+431	goto	  32
+434:30	varref	  char
+436	constant  23
+437	eqlsign	  
+438	goto-if-nil 31
+441	constant  delete-region
+442	constant  match-beginning
+443	constant  0
+444	call	  1
+445	constant  match-end
+448	constant  0
+449	call	  1
+450	call	  2
+451	discard	  
+452	constant  store-match-data
+453	constant  match-data
+454	call	  0
+455	save-excursion 
+456	constant  recursive-edit
+457	call	  0
+458	unbind	  1
+459	discard	  
+460	call	  1
+461	discard	  
+462	constant  t
+463	dup	  
+464	varset	  replaced
+466	goto	  32
+469:31	constant  nil
+470	dup	  
+471	varset	  keep-going
+473	discard	  
+474	varref	  char
+476	dup	  
+477	varset	  unread-command-char
+479	discard	  
+480	constant  t
+481	dup	  
+482	varset	  done
+484:32	discard	  
+485	goto	  11
+488:33	unbind	  2
+489:34	discard	  
+490	point	  
+491	dup	  
+492	varset	  lastrepl
+494:35	discard	  
+495	goto	  7
+498:36	discard	  
+499	constant  pop-mark
+502	call	  0
+503	discard	  
+504	varref	  keep-going
+506	unbind	  7
+508	return	  

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Print files in current directory subtree, skipping subversion
+# workspace files.
+
+a2ps --toc `gfind ! -regex '.*/.svn.*' ! -regex '.*/CVS.*' ! -regex '.*\.pdb' ! -regex '.*\.sys' ! -regex '.*\.pyc' -type f | gsort`

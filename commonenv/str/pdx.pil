@@ -1,0 +1,7 @@
+if (cpu.byp.r[[num]] != prev_r[[num]]) {
+  print "r[[num]]:(", prev_r[[num]], " ([[num]]x";
+  printx prev_r[[num]], ") -> ";
+  print cpu.byp.r[[num]], " ([[num]]x";
+  printx cpu.byp.r[[num]], ")) ";
+  is_change = 1;
+}

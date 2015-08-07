@@ -1,0 +1,1 @@
+dir=redist\core\Feature\FO,file=[[test-name]],run=true,doclrrun=false,tag=fail_wp_,exit=100,options=/logo=false /FrozenObjects=true /FrozenObjectsVerboseDiagnostic=true /FrozenObjectsReportResults=true /FrozenObjectsFilter=^\[[[test-name]]\].*

@@ -1,0 +1,2 @@
+set -x
+dumpbin /ALL /DISASM $1 > $1.dmp
