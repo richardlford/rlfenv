@@ -885,7 +885,7 @@ function Global:MgWorkDirName([string] $subdir)
 function Global:MgFormat([bool]$fix = $false)
 {
     Push-Location $mgll.llilcsrc
-    MgVCVars64
+    MgVC12Vars64
     $fixarg = ""
     if ($fix) {
         $fixarg = "--fix"
@@ -893,6 +893,9 @@ function Global:MgFormat([bool]$fix = $false)
 
     C:\Python34\python.exe utils/ccformat.py --llvm-source $mgll.llvmsrc --llvm-build $mgll.llvmbld --coreclr-build $mgll.clrbld $fixarg
     Pop-Location
+    # Switch back to selected VS.
+    MgVCVars64
+
 }
 function Global:MgDev12Init([string] $subdir, [string]$buildtype)
 {
