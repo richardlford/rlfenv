@@ -9,7 +9,7 @@
 				   "."
 				   )))
 (setenv "NEWPATH" (getenv "Path"))
-(setenv "SHELL" (concat (getenv "DataDrive") "/cygwin64/bin/bash"))
+(setenv "SHELL" "d:/cygwin64/bin/bash")
 (setenv "PS1" "$ ")
 ;;(setenv "SHELL" "c:/windows/system32/cmd.exe")
 (setenv "CVSREAD" "1")

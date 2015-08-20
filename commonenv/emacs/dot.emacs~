@@ -1,8 +1,8 @@
 ;; -*- Mode: Emacs-Lisp -*-
 ;;(setq Info-default-directory-list (cons "/opt/gnu/info" Info-default-directory-list))
 
-(setq commonenv-dir (concat (getenv "RLFENV") "/commonenv"))
-(setq home-dir (getenv "HOME"))
+(setq commonenv-dir (or (getenv "COMMONENVDIR") (expand-file-name "~/commonenv/")))
+(setq home-dir (expand-file-name "~/"))
 (defun prompt-for-insert (prompt) (interactive)
   (let ((start (copy-marker (point)))
 	end)
@@ -67,7 +67,7 @@
             (>= emacs-minor-version 14))
            (= emacs-major-version 20))
        (fboundp 'load-options-file))
-  (load-options-file (concat home-dir "/.xemacs-options"))))
+  (load-options-file (concat home-dir ".xemacs-options"))))
 ;; ============================
 ;; End of Options Menu Settings
 
@@ -85,6 +85,7 @@
 (setq load-path (append
 		 (list
 		  (concat commonenv-dir "/emacs/common")
+		  "c:/User/Maxima-5.9.2/share/maxima/5.9.2/emacs"
 		  )
 		 load-path))
 

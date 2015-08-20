@@ -308,7 +308,7 @@ function Global:MgBldClr
   # Note: the binaries are built in the source tree, that is we
   # we set location to the source rather than the binary.
   Push-Location $Global:mgll.clrsrc
-  ./build.cmd
+  ./build.cmd vs2015
   Pop-Location
 }
 
