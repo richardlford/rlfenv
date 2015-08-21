@@ -72,7 +72,7 @@ Otherwise, one argument `-i' is passed to the shell.
 		     "/bin/sh"))		     
 	   (name (file-name-nondirectory prog))
 	   (which-env (concat "_" (or (getenv "WHICHENV") "")))
-	   (startfile (concat "~/.emacs_" name which-env))
+	   (startfile (concat (getenv "rlfenv") "/.emacs_" name which-env))
 	   (xargs-name (intern-soft (concat "explicit-" name "-args"))))
       ;(prompt-for-insert "in myshell-buffer")
       (setq buffer (set-buffer (apply 'make-comint buffer-name prog
@@ -277,7 +277,7 @@ Otherwise, one argument `-i' is passed to the shell.
     (let* ((prog "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe")
 	   (name (file-name-nondirectory prog))
 	   (which-env (concat "_" (or (getenv "WHICHENV") "")))
-	   (startfile (concat "~/.emacs_" name which-env))
+	   (startfile (concat (getenv "rlfenv") "/.emacs_" name which-env))
 	   )
       ;(prompt-for-insert "in myshell-buffer-powershell")
       (setq buffer (set-buffer (apply 'make-comint buffer-name prog

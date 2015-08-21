@@ -1,0 +1,5 @@
+echo Greetings from rlfenv/.emacs_bash_CX1
+cd $DataDrive/bm
+pwd
+export PATH=$PATH:/usr/bin
+

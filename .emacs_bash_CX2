@@ -1,0 +1,3 @@
+cd d:/bm
+pwd
+export PATH=$PATH:/usr/bin:/cygdrive/d/rlf/bin

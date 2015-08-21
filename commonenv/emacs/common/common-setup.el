@@ -765,58 +765,69 @@
   )
 
 (defun cx1 ()
-  "Setup xplat development in c:/gh/llilc/src"
+  "Setup xplat development in $datadrive/bm"
   (interactive)
   (setenv "WHICHENV" "CX1")
   (setq frame-title-format (if (string= buffer-file-name "") 
 			       (concat (getenv "WHICHENV") " (%f) [%l]") 
 			     (concat (getenv "WHICHENV") " (%b) [%l]")))
   (myshell)
-  (shell-cd "c:/gh/llilc/src")
+  (shell-cd (concat (getenv "datadrive") "/bm"))
   )
 
 (defun cx2 ()
-  "Setup xplat development in c:/gh/aotllilc/src"
+  "Setup xplat development in $datadrive/bm"
   (interactive)
   (setenv "WHICHENV" "CX2")
   (setq frame-title-format (if (string= buffer-file-name "") 
 			       (concat (getenv "WHICHENV") " (%f) [%l]") 
 			     (concat (getenv "WHICHENV") " (%b) [%l]")))
   (myshell)
-  (shell-cd "c:/gh/aotllilc/src")
+  (shell-cd (concat (getenv "datadrive") "/bm"))
   )
 
 (defun cx3 ()
-  "Setup xplat development in c:/bm"
+  "Setup xplat development in $datadrive/bm"
   (interactive)
   (setenv "WHICHENV" "CX3")
   (setq frame-title-format (if (string= buffer-file-name "") 
 			       (concat (getenv "WHICHENV") " (%f) [%l]") 
 			     (concat (getenv "WHICHENV") " (%b) [%l]")))
   (myshell)
-  (shell-cd "c:/bm")
+  (shell-cd (concat (getenv "datadrive") "/bm"))
   )
 
 (defun cx4 ()
-  "Setup xplat development in c:/bm"
+  "Setup xplat development in $datadrive/bm"
   (interactive)
   (setenv "WHICHENV" "CX4")
   (setq frame-title-format (if (string= buffer-file-name "") 
 			       (concat (getenv "WHICHENV") " (%f) [%l]") 
 			     (concat (getenv "WHICHENV") " (%b) [%l]")))
   (myshell)
-  (shell-cd "c:/bm")
+  (shell-cd (concat (getenv "datadrive") "/bm"))
   )
 
 (defun cx5 ()
-  "Setup xplat development in c:/bm"
+  "Setup xplat development in $datadrive/bm"
   (interactive)
   (setenv "WHICHENV" "CX5")
   (setq frame-title-format (if (string= buffer-file-name "") 
 			       (concat (getenv "WHICHENV") " (%f) [%l]") 
 			     (concat (getenv "WHICHENV") " (%b) [%l]")))
   (myshell)
-  (shell-cd "c:/bm")
+  (shell-cd (concat (getenv "datadrive") "/bm"))
+  )
+
+(defun cx6 ()
+  "Setup xplat development in $datadrive/bm"
+  (interactive)
+  (setenv "WHICHENV" "CX6")
+  (setq frame-title-format (if (string= buffer-file-name "") 
+			       (concat (getenv "WHICHENV") " (%f) [%l]") 
+			     (concat (getenv "WHICHENV") " (%b) [%l]")))
+  (myshell)
+  (shell-cd (concat (getenv "datadrive") "/bm"))
   )
 
 ;;;(setq manual-program "/afs/ri/user/richford/bin/man")

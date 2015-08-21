@@ -1,0 +1,5 @@
+$base = $env:DataDrive+ "/bm"
+cd $base
+$cmd = $env:rlfenv + "/bin/ManageLLILCBranch.ps1"
+echo $cmd
+& $cmd richardlford $base

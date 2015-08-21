@@ -1,0 +1,3 @@
+bash -i
+export PS1="$ "
+. ./.emacs_bash_CX3

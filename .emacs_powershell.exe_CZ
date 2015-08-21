@@ -1,0 +1,4 @@
+cd c:/e/z/Midori
+ls
+echo "./setenv.ps1 $env:SETENV_DEFAULTS"
+./setenv.ps1 $env:SETENV_DEFAULTS

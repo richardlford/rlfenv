@@ -1,0 +1,19 @@
+cd d:/de/u1/bartok
+pwd
+export ROOT=d:\\de\\u1
+echo "ROOT=$ROOT"
+export BARTOKROOT="$ROOT\\bartok"
+echo "BARTOKROOT=$BARTOKROOT"
+export BARTOKOBJROOT="$ROOT\bartok.obj"
+echo "BARTOKOBJROOT=$BARTOKOBJROOT"
+export MIDROOT="$ROOT\\Midori"
+echo "MIDROOT=$MIDROOT"
+export MIDORI_OBJROOT="$ROOT\Midori.obj"
+echo "MIDORI_OBJROOT=$MIDORI_OBJROOT"
+export OTHERROOT="$ROOT\\Other"
+echo "OTHERROOT=$OTHERROOT"
+export BartokTestRoot="$BARTOKROOT\test"
+echo "BartokTestRoot=$BartokTestRoot"
+export PHXROOT="$ROOT\\Phoenix"
+echo "PHXROOT=$ROOT\\Phoenix"
+export PATH=$PATH:/usr/bin:/cygdrive/d/rlf/bin
