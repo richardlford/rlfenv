@@ -4,7 +4,7 @@
 (setenv "OLDPATH" (getenv "PATH"))
 (setenv "PATH" (string-subst-char ?/ ?\\
 				  (concat
-				   ;; (getenv "HOME") "/bin;"
+				   (getenv "RLFENV") "/bin;"
 				   (getenv "PATH") ";"
 				   "."
 				   )))
