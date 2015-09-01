@@ -891,12 +891,25 @@ function Global:MgFormat([bool]$fix = $false)
         $fixarg = "--fix"
     }
 
-    C:\Python34\python.exe utils/ccformat.py --llvm-source $mgll.llvmsrc --llvm-build $mgll.llvmbld --coreclr-build $mgll.clrbld $fixarg
+    C:\Python27\python.exe utils/ccformat.py --llvm-source $mgll.llvmsrc --llvm-build $mgll.llvmbld --coreclr-build $mgll.clrbld $fixarg
     Pop-Location
     # Switch back to selected VS.
     MgVCVars64
 
 }
+
+function Global:MgMakeDebug([string]$exeName)
+{
+    MgVC14Vars64
+    $backupName = $exeName + "-bak"
+    $srcName = $exeName + ".il"
+    Copy-Item $exeName $backupName
+    ildasm /out=$srcName $exeName
+    Remove-Item $exeName
+
+    ilasm /debug /output=$exeName $srcName
+}
+
 function Global:MgDev12Init([string] $subdir, [string]$buildtype)
 {
     $wk = MgWorkDirName $subdir
