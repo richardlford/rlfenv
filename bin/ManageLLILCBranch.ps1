@@ -268,10 +268,10 @@ function Global:MgCmLLVM
 {
   Push-Location $Global:mgll.llvmbld
   if ($Global:mgll.uni) {
-      cmake -G "Visual Studio $($Global:mgll.CmakeVersion) Win64" $Global:mgll.llvmsrc "-DWITH_CORECLR=$($Global:mgll.clrbld)" -DLLVM_ENABLE_DOXYGEN=ON -DLLVM_TARGETS_TO_BUILD:STRING=X86 "-DCMAKE_BUILD_TYPE=$($Global:mgll.buildtype)" $Global:mgll.buildcmakeoptions $args
+      cmake -G "Visual Studio $($Global:mgll.CmakeVersion) Win64" $Global:mgll.llvmsrc "-DWITH_CORECLR=$($Global:mgll.clrbld)" -DLLVM_ENABLE_DOXYGEN=ON -DLLVM_TARGETS_TO_BUILD:STRING=X86 -DLLVM_OPTIMIZED_TABLEGEN=ON "-DCMAKE_BUILD_TYPE=$($Global:mgll.buildtype)" $Global:mgll.buildcmakeoptions $args
   }
   else {
-      cmake -G "Visual Studio $($Global:mgll.CmakeVersion) Win64" $Global:mgll.llvmsrc -DLLVM_ENABLE_DOXYGEN=ON -DLLVM_TARGETS_TO_BUILD:STRING=X86 "-DCMAKE_BUILD_TYPE=$($Global:mgll.buildtype)" $Global:mgll.buildcmakeoptions $args
+      cmake -G "Visual Studio $($Global:mgll.CmakeVersion) Win64" $Global:mgll.llvmsrc -DLLVM_ENABLE_DOXYGEN=ON -DLLVM_TARGETS_TO_BUILD:STRING=X86 -DLLVM_OPTIMIZED_TABLEGEN=ON "-DCMAKE_BUILD_TYPE=$($Global:mgll.buildtype)" $Global:mgll.buildcmakeoptions $args
   }
   Pop-Location
 }
@@ -282,7 +282,7 @@ function Global:MgCmLLILC
       throw "MgCmLLILC: Not configured for separate cmake"
   }
   Push-Location $Global:mgll.llilcbld
-  cmake -G "Visual Studio $($Global:mgll.CmakeVersion) Win64" $Global:mgll.llilcsrc "-DWITH_CORECLR=$($Global:mgll.clrbld)" "-DWITH_LLVM=$($Global:mgll.llvmbld)" -DLLVM_TARGETS_TO_BUILD:STRING=X86 -DLLVM_ENABLE_DOXYGEN=ON "-DCMAKE_BUILD_TYPE=$($Global:mgll.buildtype)" $Global:mgll.buildcmakeoptions
+  cmake -G "Visual Studio $($Global:mgll.CmakeVersion) Win64" $Global:mgll.llilcsrc "-DWITH_CORECLR=$($Global:mgll.clrbld)" "-DWITH_LLVM=$($Global:mgll.llvmbld)" -DLLVM_TARGETS_TO_BUILD:STRING=X86 -DLLVM_OPTIMIZED_TABLEGEN=ON -DLLVM_ENABLE_DOXYGEN=ON "-DCMAKE_BUILD_TYPE=$($Global:mgll.buildtype)" $Global:mgll.buildcmakeoptions
   Pop-Location
 }
 
@@ -492,6 +492,7 @@ function Global:MgStatClr
 
 function Global:MgStat
 {
+  MgStatDir $Global:mgll.clrsrc
   MgStatDir $Global:mgll.llvmsrc
   MgStatDir $Global:mgll.llilcsrc
   if ($Global:mgll.clangp) {
@@ -509,30 +510,43 @@ function Global:MgPyTest
     Remove-Item -Recurse $Global:mgll.testdir 
   }
   New-Item $Global:mgll.testdir -itemtype Directory  | Out-Null
-  Push-Location $Global:mgll.clrtests
-  python $Global:mgll.runtestpy -a x64 -b debug -d summary -r $Global:mgll.testdir -j $Global:mgll.llilcjit -c $Global:mgll.clrbld
+  Push-Location $Global:mgll.clrtestsrc
+  python $Global:mgll.llilcruntestpy -a x64 -b debug -d summary -r $Global:mgll.testdir -j $Global:mgll.llilcjit -c $Global:mgll.clrbld
   $code = $lastexitcode
   Pop-Location
   Write-Output "Test script exited with code $code"
   if ($code -ne 0) {
     throw "There were failures and/or diffs"
   }
+}$
+
+# Run a single test.
+# $testpath is relative to coreclr\bin\tests\Windows_NT.x64.Debug
+# $summary, if $true, includes method summary info.
+# $exclude, if "*" will run with RyuJit rather than LLILC
+# $debug, if $true, will run it with windbg.
+function Global:MgPySingle([string]$testpath, [bool]$summary, [string]$exclude, [bool]$debug)
+{
+    $testpath = Join-Path $Global:mgll.clrtestbld $testpath
+    $extra = ""
+    if ($debug) {
+        $extra = $Global:mgll.windbg
+    }
+    if ($summary) {
+        python $Global:mgll.llilcrunpy -d summary -x coderangedump=* exclude=$exclude -j $Global:mgll.llilcjit -c $Global:mgll.clrbld -r corerun.exe /v -w $extra -a $testpath
+    }
+    else {
+        python $Global:mgll.llilcrunpy -x exclude=$exclude -j $Global:mgll.llilcjit -c $Global:mgll.clrbld -r corerun.exe /v -w $extra -a $testpath
+    }
+    $code = $lastexitcode
+    Write-Output "llilc_run.py exited with code $code"
 }
 
-function Global:MgPySingle([string]$testpath, [bool]$debug)
+function Global:MgMakeSln([string]$testpath)
 {
-  $extra = ""
-  if ($debug) {
-    $extra = $Global:mgll.windbg
-
-    Write-Output "python $($Global:mgll.runtestpy) -a x64 -b debug -d summary -j $($Global:mgll.llilcjit) -c $($Global:mgll.clrbld) -s $testpath -g $extra"
-  }
-  python $Global:mgll.runtestpy -a x64 -b debug -d summary -j $Global:mgll.llilcjit -c $Global:mgll.clrbld -s $testpath --ca '/v' -g $extra
+  python $Global:mgll.llilcmakeslnpy -i -f -d summary -x coderangedump=* -j $Global:mgll.llilcjit -c $Global:mgll.clrbld -r /v  -a $testpath
   $code = $lastexitcode
-  Write-Output "Test exited with code $code"
-  if ($code -ne 0) {
-    throw "There were failures and/or diffs"
-  }
+  Write-Output "make_sln.py exited with code $code"
 }
 
 function Global:MgPushDir([string]$dirname)
@@ -595,6 +609,7 @@ function Global:MgUpdateDir([string]$dirname)
 
 function Global:MgUpdate
 {
+  MgUpdateDir coreclr
   MgUpdateDir llvm
   MgUpdateDir llilc
   if ($Global:mgll.clangp) {
@@ -910,6 +925,14 @@ function Global:MgMakeDebug([string]$exeName)
     ilasm /debug /output=$exeName $srcName
 }
 
+function Global:MgRunRyujitTests
+{
+    $env:SkipTestAssemblies = "Common;Exceptions;GC;Loader;managed;packages;Regressions;runtime;Tests;TestWrappers_x64_release;Threading"
+    Push-Location $Global:mgll.clrtestsrc
+    ./runtest.cmd Exclude $Global:mgll.llilcexclusions $Global:mgll.clrbld
+    Pop-Location
+}
+
 function Global:MgDev12Init([string] $subdir, [string]$buildtype)
 {
     $wk = MgWorkDirName $subdir
@@ -1006,8 +1029,9 @@ function Global:MgInit([string]$wk, [string]$buildtype, [string]$branch,
 
     $Global:mgll.clrsrc = Join-Path $wk "coreclr"
     $env:CORECLRSOURCE = $Global:mgll.clrsrc
-    $Global:mgll.clrtests = Join-Path $Global:mgll.clrsrc "tests"
     $Global:mgll.clrbld = Join-Path $Global:mgll.clrsrc "bin/Product/Windows_NT.x64.Debug"
+    $Global:mgll.clrtestsrc = Join-Path $Global:mgll.clrsrc "tests"
+    $Global:mgll.clrtestbld = Join-Path $Global:mgll.clrsrc "bin/tests/Windows_NT.x64.Debug"
 
     $Global:mgll.roslynsrc = Join-Path $wk "roslyn"
     $Global:mgll.roslynrun = Join-Path $wk "rosrun"
@@ -1045,7 +1069,11 @@ function Global:MgInit([string]$wk, [string]$buildtype, [string]$branch,
         $Global:mgll.extrasrc = Join-Path $Global:mgll.clangsrc "tools/extra"
     }
 
-    $Global:mgll.runtestpy = Join-Path $Global:mgll.llilcsrc "test/llilc_runtest.py"
+    $Global:mgll.llilctest = Join-Path $Global:mgll.llilcsrc "test"
+    $Global:mgll.llilcruntestpy = Join-Path $Global:mgll.llilctest "llilc_runtest.py"
+    $Global:mgll.llilcrunpy = Join-Path $Global:mgll.llilctest "llilc_run.py"
+    $Global:mgll.llilcmakeslnpy = Join-Path $Global:mgll.llilctest "make_sln.py"
+    $Global:mgll.llilcexclusions = Join-Path $Global:mgll.llilctest "exclusion.targets"
     $Global:mgll.test = Join-Path $wk test
     $Global:mgll.testdir = Join-Path $wk "target"
 
@@ -1056,6 +1084,7 @@ function Global:MgInit([string]$wk, [string]$buildtype, [string]$branch,
         $baseBranch.clang = "MS"
         $baseBranch.extra = "MS"
     }
+    $baseBranch.coreclr = "master"
     $Global:mgll.baseBranchMap = $baseBranch
 
     $src = @{}
@@ -1065,6 +1094,7 @@ function Global:MgInit([string]$wk, [string]$buildtype, [string]$branch,
         $src.clang = $Global:mgll.clangsrc
         $src.extra = $Global:mgll.extrasrc
     }
+    $src.coreclr = $Global:mgll.clrsrc
     $Global:mgll.src = $src
 
     MgSetBuildType $buildtype
