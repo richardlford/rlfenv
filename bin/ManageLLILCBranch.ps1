@@ -132,6 +132,12 @@ function Global:MgVCVars64
   MgEnvCapture "$commonTools\..\..\vc\vcvarsall.bat" "x64"
 }
 
+function Global:MgVSCmd
+{
+  $devVersion = $Global:mgll.DevVersion
+  $commonTools = Get-Content env:VS$($devVersion)COMNTOOLS
+  MgEnvCapture "$commonTools\VsDevCmd.bat"
+}
 function Global:MgMkBldDir([string] $buildtype)
 {
     $Exists = Test-Path $Global:mgll.llvmbld
@@ -195,7 +201,7 @@ function Global:MgCloneRoslyn
 function Global:MgRestoreRoslyn
 {
   Push-Location $Global:mgll.roslynsrc
-  .\.nuget\NuGetRestore.ps1
+  .\nuget.exe restore src/Compilers/CSharp/CscCore/CscCore.csproj
   Pop-Location
 }
 
