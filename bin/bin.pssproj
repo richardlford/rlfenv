@@ -28,6 +28,10 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <Compile Include="diffdirs.ps1" />
+    <Compile Include="diffother.ps1" />
+    <Compile Include="diffup.ps1" />
+    <Compile Include="diffupdir.ps1" />
     <Compile Include="ManageLLILCBranch.ps1" />
     <Compile Include="Script.ps1" />
   </ItemGroup>

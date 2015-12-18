@@ -1,0 +1,3 @@
+        <ExcludeList Include="$(XunitTestBinBase)\[[test]]" >
+             <Issue>13</Issue>
+        </ExcludeList>

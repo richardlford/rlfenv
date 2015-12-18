@@ -513,27 +513,21 @@ function Global:MgStat
 
 # Test functions
 
-function Global:MgPyTest([bool]$eh)
+function Global:MgPyTest
 {
-    $Exists = Test-Path $Global:mgll.testdir
-    if ($Exists) {
-        Remove-Item -Recurse $Global:mgll.testdir 
-    }
-    New-Item $Global:mgll.testdir -itemtype Directory  | Out-Null
-
-    $ehflag = ""
-    if ($eh) {
-        $ehflag = "-e"
-    }
-
-    Push-Location $Global:mgll.clrtestsrc
-    python $Global:mgll.llilcruntestpy $ehflag -a x64 -b debug -d summary -r $Global:mgll.testdir -j $Global:mgll.llilcjit -c $Global:mgll.clrbld
-    $code = $lastexitcode
-    Pop-Location
-    Write-Output "Test script exited with code $code"
-    if ($code -ne 0) {
-        throw "There were failures and/or diffs"
-    }
+  $Exists = Test-Path $Global:mgll.testdir
+  if ($Exists) {
+    Remove-Item -Recurse $Global:mgll.testdir 
+  }
+  New-Item $Global:mgll.testdir -itemtype Directory  | Out-Null
+  Push-Location $Global:mgll.clrtestsrc
+  python $Global:mgll.llilcruntestpy -a x64 -b debug -d summary -r $Global:mgll.testdir -j $Global:mgll.llilcjit -c $Global:mgll.clrbld
+  $code = $lastexitcode
+  Pop-Location
+  Write-Output "Test script exited with code $code"
+  if ($code -ne 0) {
+    throw "There were failures and/or diffs"
+  }
 }
 
 # Run a single test.
